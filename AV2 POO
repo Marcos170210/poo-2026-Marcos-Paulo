@@ -1,0 +1,126 @@
+class Veiculo:
+    def __init__(self, modelo, placa, diaria):
+        self.__modelo = modelo
+        self.__placa = placa
+        self.set_diaria(diaria)
+
+    def get_modelo(self):
+        return self.__modelo
+
+    def get_placa(self):
+        return self.__placa
+
+    def get_diaria(self):
+        return self.__diaria
+
+    def set_diaria(self, valor):
+        if valor <= 0:
+            raise ValueError("A diária deve ser maior que zero.")
+        self.__diaria = valor
+
+    def calcular_aluguel(self, dias):
+        if dias <= 0:
+            raise ValueError("Os dias devem ser maiores que zero.")
+        return self.__diaria * dias
+
+
+class Carro(Veiculo):
+    def __init__(self, modelo, placa, diaria, portas):
+        super().__init__(modelo, placa, diaria)
+        self.portas = portas
+
+    def calcular_aluguel(self, dias):
+        return super().calcular_aluguel(dias) + 50
+
+
+class Moto(Veiculo):
+    def __init__(self, modelo, placa, diaria, cilindradas):
+        super().__init__(modelo, placa, diaria)
+        self.cilindradas = cilindradas
+
+    def calcular_aluguel(self, dias):
+        return super().calcular_aluguel(dias) * 0.90
+
+
+# Lista que armazena Carros e Motos
+frota = []
+
+
+while True:
+    print("\n===== SISTEMA DE FROTA =====")
+    print("1 - Cadastrar carro")
+    print("2 - Cadastrar moto")
+    print("3 - Calcular aluguel")
+    print("4 - Listar veículos")
+    print("0 - Sair")
+
+    try:
+        opcao = int(input("Escolha uma opção: "))
+
+        if opcao == 1:
+            modelo = input("Modelo: ")
+            placa = input("Placa: ")
+            diaria = float(input("Valor da diária: R$ "))
+            portas = int(input("Quantidade de portas: "))
+
+            carro = Carro(modelo, placa, diaria, portas)
+            frota.append(carro)
+
+            print("Carro cadastrado com sucesso!")
+
+        elif opcao == 2:
+            modelo = input("Modelo: ")
+            placa = input("Placa: ")
+            diaria = float(input("Valor da diária: R$ "))
+            cilindradas = int(input("Cilindradas: "))
+
+            moto = Moto(modelo, placa, diaria, cilindradas)
+            frota.append(moto)
+
+            print("Moto cadastrada com sucesso!")
+
+        elif opcao == 3:
+            if not frota:
+                print("Nenhum veículo cadastrado.")
+                continue
+
+            print("\nVeículos:")
+            for i, veiculo in enumerate(frota, 1):
+                print(f"{i} - {veiculo.get_modelo()} - {veiculo.get_placa()}")
+
+            escolha = int(input("Escolha o veículo: "))
+
+            if escolha < 1 or escolha > len(frota):
+                raise IndexError("Veículo inexistente.")
+
+            dias = int(input("Quantidade de dias: "))
+
+            valor = frota[escolha - 1].calcular_aluguel(dias)
+
+            print(f"Valor total do aluguel: R$ {valor:.2f}")
+
+        elif opcao == 4:
+            if not frota:
+                print("Nenhum veículo cadastrado.")
+            else:
+                print("\n===== VEÍCULOS CADASTRADOS =====")
+
+                for veiculo in frota:
+                    print(
+                        f"Modelo: {veiculo.get_modelo()} | "
+                        f"Placa: {veiculo.get_placa()} | "
+                        f"Diária: R$ {veiculo.get_diaria():.2f}"
+                    )
+
+        elif opcao == 0:
+            print("Programa encerrado!")
+            break
+
+        else:
+            print("Opção inválida!")
+
+    except ValueError as erro:
+        print(f"Erro: {erro}")
+
+    except IndexError as erro:
+        print(f"Erro: {erro}")
